@@ -183,7 +183,32 @@ class TestBarangayHealthCenterSystem(unittest.TestCase):
     # -------------------------
     # MEDICAL RECORD TESTS
     # -------------------------
+    def test_update_medical_record_validation_failure(self):
+        patient_id = self.create_patient()
 
+        response = self.client.post(
+            "/medical-records",
+            json={
+                "patientId": patient_id,
+                "diagnosis": "Fever",
+                "treatment": "Rest and medication",
+                "notes": "Follow-up if symptoms continue"
+            }
+        )
+
+        medical_record_id = response.get_json()["data"]["id"]
+
+        response = self.client.put(
+            f"/medical-records/{medical_record_id}",
+            json={
+                "diagnosis": ""
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.get_json()["status"], 422)
+        self.assertIn("error", response.get_json())
+        self.assertIn("field", response.get_json())
     def test_create_medical_record_success(self):
         patient_id = self.create_patient()
 
@@ -215,7 +240,29 @@ class TestBarangayHealthCenterSystem(unittest.TestCase):
     # -------------------------
     # HEALTH SERVICE TESTS
     # -------------------------
+    def test_update_health_service_validation_failure(self):
+        response = self.client.post(
+            "/health-services",
+            json={
+                "name": "General Checkup",
+                "description": "Basic health checkup",
+                "availability": "Monday-Friday"
+            }
+        )
 
+        health_service_id = response.get_json()["data"]["id"]
+
+        response = self.client.put(
+            f"/health-services/{health_service_id}",
+            json={
+                "name": ""
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.get_json()["status"], 422)
+        self.assertIn("error", response.get_json())
+        self.assertIn("field", response.get_json())
     def test_create_health_service_success(self):
         response = self.client.post(
             "/health-services",
