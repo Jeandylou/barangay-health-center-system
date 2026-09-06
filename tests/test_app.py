@@ -101,6 +101,23 @@ class AppTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 422)
 
+    def test_create_patient_invalid_gender(self):
+        response = self.client.post(
+            "/patients",
+            json={
+                "firstName": "Juan",
+                "lastName": "Dela Cruz",
+                "dateOfBirth": "2000-01-01",
+                "gender": "Invalid",
+                "contactNumber": "09123456789",
+                "address": "Bukidnon"
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.get_json()["status"], 422)
+        self.assertIn("error", response.get_json())
+
     def test_update_patient_validation_failure(self):
         patient_id = self.create_patient()
 
@@ -168,6 +185,42 @@ class AppTestCase(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 422)
+
+    def test_create_appointment_invalid_date(self):
+        patient_id = self.create_patient()
+
+        response = self.client.post(
+            "/appointments",
+            json={
+                "patientId": patient_id,
+                "appointmentDate": "invalid-date",
+                "appointmentTime": "09:00",
+                "service": "Medical Checkup",
+                "status": "Scheduled"
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.get_json()["status"], 422)
+        self.assertIn("error", response.get_json())
+
+    def test_create_appointment_invalid_status(self):
+        patient_id = self.create_patient()
+
+        response = self.client.post(
+            "/appointments",
+            json={
+                "patientId": patient_id,
+                "appointmentDate": "2026-09-10",
+                "appointmentTime": "09:00",
+                "service": "Medical Checkup",
+                "status": "Invalid"
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.get_json()["status"], 422)
+        self.assertIn("error", response.get_json())
 
     def test_update_appointment_validation_failure(self):
         patient_id = self.create_patient()
@@ -303,6 +356,20 @@ class AppTestCase(unittest.TestCase):
                 "name": "",
                 "description": "Basic health consultation",
                 "status": "Active"
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.get_json()["status"], 422)
+        self.assertIn("error", response.get_json())
+
+    def test_create_health_service_invalid_status(self):
+        response = self.client.post(
+            "/health-services",
+            json={
+                "name": "Medical Checkup",
+                "description": "Basic health consultation",
+                "status": "Invalid"
             }
         )
 
