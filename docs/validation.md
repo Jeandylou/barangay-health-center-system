@@ -14,125 +14,74 @@
 
 ## Patient Management
 
-### POST /patients
-
-| Field | Rules |
-|---|---|
-| firstName | required, string, 1–50 chars |
-| lastName | required, string, 1–50 chars |
-| dateOfBirth | required, date, YYYY-MM-DD format |
-| gender | required, one of: Male, Female, Other |
-| contactNumber | required, string, 11 digits, format 09XXXXXXXXX |
-| address | required, string, 5–200 chars |
-
-### PUT /patients/:id
-
-| Field | Rules |
-|---|---|
-| firstName | optional, string, 1–50 chars |
-| lastName | optional, string, 1–50 chars |
-| dateOfBirth | optional, date, YYYY-MM-DD format |
-| gender | optional, one of: Male, Female, Other |
-| contactNumber | optional, string, 11 digits, format 09XXXXXXXXX |
-| address | optional, string, 5–200 chars |
+| Field | Rule | POST | PUT |
+|---|---|---|---|
+| firstName | Required, string, 1–50 characters | 422 | 422 |
+| lastName | Required, string, 1–50 characters | 422 | 422 |
+| dateOfBirth | Required, YYYY-MM-DD format | 422 | 422 |
+| gender | Male, Female, or Other | 422 | 422 |
+| contactNumber | 11 digits, starts with 09 | 422 | 422 |
+| address | Required, string, 5–200 characters | 422 | 422 |
 
 ---
 
 ## Appointment Management
 
-### POST /appointments
-
-| Field | Rules |
-|---|---|
-| patientId | required, referential, must reference an existing patient |
-| appointmentDate | required, date, YYYY-MM-DD format |
-| appointmentTime | required, time, HH:MM format |
-| service | required, string, 1–100 chars |
-| status | required, one of: Scheduled, Completed, Cancelled |
-
-### PUT /appointments/:id
-
-| Field | Rules |
-|---|---|
-| patientId | optional, referential, must reference an existing patient |
-| appointmentDate | optional, date, YYYY-MM-DD format |
-| appointmentTime | optional, time, HH:MM format |
-| service | optional, string, 1–100 chars |
-| status | optional, one of: Scheduled, Completed, Cancelled |
+| Field | Rule | POST | PUT |
+|---|---|---|---|
+| patientId | Must reference an existing patient | 422 | 422 |
+| appointmentDate | YYYY-MM-DD format | 422 | 422 |
+| appointmentTime | HH:MM format | 422 | 422 |
+| service | Required, 1–100 characters | 422 | 422 |
+| status | Scheduled, Completed, or Cancelled | 422 | 422 |
 
 ---
 
 ## Medical Records
 
-### POST /medical-records
-
-| Field | Rules |
-|---|---|
-| patientId | required, referential, must reference an existing patient |
-| diagnosis | required, string, 1–500 chars |
-| treatment | required, string, 1–500 chars |
-| recordDate | required, date, YYYY-MM-DD format |
-
-### PUT /medical-records/:id
-
-| Field | Rules |
-|---|---|
-| patientId | optional, referential, must reference an existing patient |
-| diagnosis | optional, string, 1–500 chars |
-| treatment | optional, string, 1–500 chars |
-| recordDate | optional, date, YYYY-MM-DD format |
+| Field | Rule | POST | PUT |
+|---|---|---|---|
+| patientId | Must reference an existing patient | 422 | 422 |
+| diagnosis | Required, string | 422 | 422 |
+| treatment | Required, string | 422 | 422 |
+| recordDate | YYYY-MM-DD format | 422 | 422 |
 
 ---
 
 ## Health Services
 
-### POST /health-services
-
-| Field | Rules |
-|---|---|
-| name | required, string, 1–100 chars |
-| description | required, string, 1–500 chars |
-| status | required, one of: Active, Inactive |
-
-### PUT /health-services/:id
-
-| Field | Rules |
-|---|---|
-| name | optional, string, 1–100 chars |
-| description | optional, string, 1–500 chars |
-| status | optional, one of: Active, Inactive |
+| Field | Rule | POST | PUT |
+|---|---|---|---|
+| name | Required, 1–100 characters | 422 | 422 |
+| description | Required, string | 422 | 422 |
+| status | Active or Inactive | 422 | 422 |
 
 ---
 
 ## User Management
 
-### POST /users
-
-| Field | Rules |
-|---|---|
-| username | required, string, 3–50 chars |
-| password | required, string, 8–100 chars |
-| role | required, one of: Administrator, Staff |
-
-### PUT /users/:id
-
-| Field | Rules |
-|---|---|
-| username | optional, string, 3–50 chars |
-| password | optional, string, 8–100 chars |
-| role | optional, one of: Administrator, Staff |
+| Field | Rule | POST | PUT |
+|---|---|---|---|
+| username | Required, string | 422 | 422 |
+| password | Required, minimum 8 characters | 422 | 422 |
+| role | Administrator or Staff | 422 | 422 |
 
 ---
 
 # Standard Error Response
 
-All validation failures use the same format:
+All validation failures use HTTP 422.
 
 ```json
 {
   "status": 422,
-  "error": "field is invalid",
-  "field": "field"
+  "error": "Validation error message",
+  "field": "fieldName"
+}
+{
+  "status": 403,
+  "error": "not allowed",
+  "field": "authorization"
 }
 # Break-It Test Log
 
@@ -140,12 +89,12 @@ All validation failures use the same format:
 |---|---|---|
 | Missing required patient field | HTTP 422 | Passed |
 | Invalid patient contact number | HTTP 422 | Passed |
-| Invalid patient gender | HTTP 422 | Pending |
-| Invalid appointment date | HTTP 422 | Pending |
-| Invalid appointment status | HTTP 422 | Pending |
+| Invalid patient gender | HTTP 422 | Passed |
+| Invalid appointment date | HTTP 422 | Passed |
+| Invalid appointment status | HTTP 422 | Passed |
 | Invalid medical record patientId | HTTP 422 | Passed |
-| Invalid health service status | HTTP 422 | Pending |
-| Invalid user role | HTTP 422 | Pending |
+| Invalid health service status | HTTP 422 | Passed |
+| Invalid user role | HTTP 422 | Passed |
 | Forbidden delete action | HTTP 403 | Passed |
 
 ## Break-It Testing Notes
@@ -154,4 +103,4 @@ All validation failures use the same format:
 - Validation errors must use the standard error response.
 - Validation failures must return HTTP 422.
 - Forbidden actions must return HTTP 403.
-- Actual results are recorded after automated or manual testing.
+- All listed Break-It tests currently pass in the automated test suite.
