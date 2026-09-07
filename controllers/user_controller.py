@@ -1,47 +1,13 @@
 from flask import jsonify, request
 
 from app import (
-    users,
-    validation_error
+    validation_error,
+    save_user,
+    get_users,
+    get_user_by_id,
+    update_user_by_id,
+    delete_user_by_id
 )
-
-
-def save_user(data):
-    user = {
-        "id": len(users) + 1,
-        **data
-    }
-    users.append(user)
-    return user
-
-
-def get_users():
-    return users
-
-
-def get_user_by_id(user_id):
-    for user in users:
-        if user["id"] == int(user_id):
-            return user
-    return None
-
-
-def update_user_by_id(user_id, data):
-    for index, user in enumerate(users):
-        if user["id"] == int(user_id):
-            users[index] = {
-                **user,
-                **data
-            }
-            return users[index]
-    return None
-
-
-def delete_user_by_id(user_id):
-    for index, user in enumerate(users):
-        if user["id"] == int(user_id):
-            return users.pop(index)
-    return None
 
 
 def list_users():
