@@ -56,4 +56,12 @@ HTTP Method Summary
 
 Implementation Note
 
-The Patient Management routes have been implemented in the current Flask application. The remaining resource routes are documented as part of the system’s planned routing structure and will be implemented as their corresponding features are developed.
+All five resource groups have been implemented in the current Flask application:
+
+- Patient Management
+- Appointment Management
+- Medical Records
+- Health Services
+- User Management
+
+The routes are connected to their corresponding controller modules. Controllers handle request processing, validation, CRUD operations, and appropriate HTTP responses.
