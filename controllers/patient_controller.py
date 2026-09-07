@@ -1,6 +1,12 @@
 from flask import jsonify, request
-
-from app import patients, validation_error
+from app import (
+    validation_error,
+    save_patient,
+    get_patients,
+    get_patient_by_id,
+    update_patient_by_id,
+    delete_patient_by_id
+)
 
 
 def list_patients():
