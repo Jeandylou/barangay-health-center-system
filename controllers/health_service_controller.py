@@ -1,47 +1,13 @@
 from flask import jsonify, request
 
 from app import (
-    health_services,
-    validation_error
+    validation_error,
+    save_health_service,
+    get_health_services,
+    get_health_service_by_id,
+    update_health_service_by_id,
+    delete_health_service_by_id
 )
-
-
-def save_health_service(data):
-    service = {
-        "id": len(health_services) + 1,
-        **data
-    }
-    health_services.append(service)
-    return service
-
-
-def get_health_services():
-    return health_services
-
-
-def get_health_service_by_id(service_id):
-    for service in health_services:
-        if service["id"] == int(service_id):
-            return service
-    return None
-
-
-def update_health_service_by_id(service_id, data):
-    for index, service in enumerate(health_services):
-        if service["id"] == int(service_id):
-            health_services[index] = {
-                **service,
-                **data
-            }
-            return health_services[index]
-    return None
-
-
-def delete_health_service_by_id(service_id):
-    for index, service in enumerate(health_services):
-        if service["id"] == int(service_id):
-            return health_services.pop(index)
-    return None
 
 
 def list_health_services():
